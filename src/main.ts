@@ -7,6 +7,13 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // CORS yapılandırması
+  app.enableCors({
+    origin: ['http://localhost:5173', 'http://localhost:3000'], // İzin verilen originler
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+  });
+
   const config = new DocumentBuilder()
     .setTitle('Median')
     .setDescription('The Median API description')
