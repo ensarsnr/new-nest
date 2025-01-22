@@ -6,6 +6,9 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
+  // Önce mevcut kullanıcıları temizle
+  await prisma.user.deleteMany({});
+
   // create dummy users
   const user1 = await prisma.user.create({
     data: {
