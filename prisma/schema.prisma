@@ -1,0 +1,15 @@
+datasource db {
+  provider = "postgresql" // Veritabanı türünü belirtin (örneğin PostgreSQL, MySQL, SQLite vb.)
+  url      = env("DATABASE_URL") // Veritabanı bağlantı URL'si
+}
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-arm64-openssl-3.0.x"]
+}
+
+model User {
+  id    Int    @id @default(autoincrement())
+  name  String
+  email String @unique
+}

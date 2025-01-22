@@ -1,0 +1,36 @@
+# docker-compose.yml
+
+version: '3.8'
+services:
+  api:
+    build: .
+    ports:
+      - '3000:3000'
+    environment:
+      - DATABASE_URL=postgresql://myuser:mypassword@postgres:5432/mydatabase
+    depends_on:
+      postgres:
+        condition: service_healthy  # Postgres hazır olana kadar bekle
+    command: sh -c "npx prisma migrate deploy && npx prisma db seed && npm run start:prod"  # Veritabanı şemasını oluştur ve tohum verilerini ekle
+
+  postgres:
+    image: postgres:13.5
+    restart: always
+    environment:
+      - POSTGRES_USER=myuser
+      - POSTGRES_PASSWORD=mypassword
+      - POSTGRES_DB=mydatabase  # Veritabanını otomatik oluştur
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    healthcheck:  # Sağlık kontrolü ekle
+      test: ["CMD-SHELL", "pg_isready -U myuser -d mydatabase"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres:
+
+
