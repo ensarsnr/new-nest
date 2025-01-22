@@ -12,15 +12,15 @@ async function main() {
   // create dummy users
   const user1 = await prisma.user.create({
     data: {
-      name: 'Ahmet Yılmaz',
-      email: 'ahmet@example.com',
+      username: 'admin',
+      password: 'admin'
     },
   });
 
   const user2 = await prisma.user.create({
     data: {
-      name: 'Ayşe Demir',
-      email: 'ayse@example.com',
+      username: 'Ayşe Demir',
+      password: 'sifre456'
     },
   });
 

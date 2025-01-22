@@ -8,6 +8,7 @@ services:
       - '3000:3000'
     environment:
       - DATABASE_URL=postgresql://myuser:mypassword@postgres:5432/mydatabase
+      - JWT_SECRET=your-super-secret-key-here
     depends_on:
       postgres:
         condition: service_healthy
@@ -18,6 +19,8 @@ services:
       timeout: 10s
       retries: 3
     command: sh -c "npx prisma migrate deploy && npx prisma db seed && npm run start:prod"
+    volumes:
+      - ./.env:/usr/src/app/.env
 
   postgres:
     image: postgres:13.5
