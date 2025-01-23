@@ -4,39 +4,30 @@ FROM node:20.11-slim
 # Create app directory
 WORKDIR /usr/src/app
 
-# OpenSSL ve diğer gerekli paketleri kur
-RUN apt-get update -y && \
-    apt-get install -y \
-    openssl \
-    libssl-dev \
-    ca-certificates \
-    curl \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+# Install OpenSSL and other required packages
+RUN apt-get update && \
+    apt-get install -y openssl curl && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
+# Copy package files
 COPY package*.json ./
-
-# Copy prisma schema first
 COPY prisma ./prisma/
 
-# Install app dependencies
+# Install dependencies
 RUN npm install
 
 # Generate Prisma Client
 RUN npx prisma generate
 
-# Bundle app source
+# Copy source code
 COPY . .
 
-# Copy the .env files
-COPY .env* ./
-
-# Creates a "dist" folder with the production build
+# Build application
 RUN npm run build
 
-# Expose the port
+# Expose port
 EXPOSE 3000
 
-# Modify the start command to ensure Prisma migrations run first
-CMD sh -c "npx prisma migrate deploy && npm run start:prod"
+# Start the application
+CMD ["npm", "run", "start:prod"]
